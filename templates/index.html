@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Stock Analysis</h1>
+
+        <!-- Form to enter stock data -->
+        <form method="POST" action="/plot">
+            <div class="input-group">
+                <label for="stock_symbol">Stock Symbol:</label>
+                <input type="text" id="stock_symbol" name="stock_symbol" required>
+            </div>
+
+            <div class="input-group">
+                <label for="long_volatility">Long Volatility:</label>
+                <input type="number" id="long_volatility" name="long_volatility" step="0.01" required>
+            </div>
+
+            <div class="input-group">
+                <label for="short_volatility">Short Volatility:</label>
+                <input type="number" id="short_volatility" name="short_volatility" step="0.01" required>
+            </div>
+
+            <div class="input-group">
+                <label for="rsi_upper">RSI Upper Threshold:</label>
+                <input type="number" id="rsi_upper" name="rsi_upper" step="0.01" required>
+            </div>
+
+            <div class="input-group">
+                <label for="rsi_lower">RSI Lower Threshold:</label>
+                <input type="number" id="rsi_lower" name="rsi_lower" step="0.01" required>
+            </div>
+
+            <button type="submit">Generate Plot</button>
+        </form>
+
+        <!-- Display the plot -->
+        {% if plot_html %}
+        <div id="plot-container">
+            <h2>Generated Plot</h2>
+            <div id="plot">
+                {{ plot_html|safe }}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Display Blotter table -->
+        {% if blotter_html %}
+        <div id="blotter-container">
+            <h2>Blotter</h2>
+            <div id="blotter">
+                {{ blotter_html|safe }}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Display Ledger table -->
+        {% if ledger_html %}
+        <div id="ledger-container">
+            <h2>Ledger</h2>
+            <div id="ledger">
+                {{ ledger_html|safe }}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

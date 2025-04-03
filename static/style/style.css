@@ -1,0 +1,161 @@
+/* General layout and styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    color: #333;
+}
+
+.container {
+    width: 80%;
+    max-width: 1100px;
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+    font-size: 2rem;
+    margin-bottom: 30px;
+}
+
+/* Form styling */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+label {
+    font-size: 1rem;
+    color: #555;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+/* Plot, Blotter, and Ledger containers */
+#plot-container, #blotter-container, #ledger-container {
+    margin-top: 40px;
+    text-align: center;
+}
+
+h2 {
+    color: #2c3e50;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+/* Styling for tables */
+.table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.table th,
+.table td {
+    padding: 12px;
+    text-align: left;
+    font-size: 1rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.table th {
+    background-color: #3498db;
+    color: #fff;
+}
+
+.table-striped tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+.table-striped tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+.table td {
+    color: #555;
+}
+
+.table th, .table td {
+    padding: 12px;
+}
+
+/* Adjust plot size */
+#plot div {
+    max-width: 100%;
+    width: 90%;
+    margin: 0 auto;
+    height: 400px;  /* Adjust height */
+}
+
+/* Responsive design */
+@media screen and (max-width: 768px) {
+    .container {
+        width: 90%;
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    button {
+        padding: 12px;
+    }
+
+    .table th, .table td {
+        padding: 10px;
+    }
+
+    #plot div {
+        height: 300px;  /* Adjust plot height for smaller screens */
+    }
+}
