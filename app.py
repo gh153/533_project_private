@@ -17,7 +17,7 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
             'currency': "USD"
         }),
         barSizeSetting="1 hour",
-        durationStr="6 M",
+        durationStr="7 M",
     )
 
     #### Get daily data as well because it speeds up the code
@@ -30,7 +30,7 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
             'currency': "USD"
         }),
         barSizeSetting="1 day",
-        durationStr="6 M"
+        durationStr="7 M"
     )
     historical_data_hourly = historical_data_hourly['hst_dta']
     historical_data_daily = historical_data_daily['hst_dta']
@@ -211,11 +211,11 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
 
     log_return_daily_full = [None] * len(historical_data_daily['timestamp'])
     for i in range(len(historical_data_daily['timestamp']) - 1):
-        log_return_daily_full[i] = (np.log(historical_data_daily['close'][i + 1] / historical_data_daily['close'][i]))
+        log_return_daily_full[i] = (np.log(historical_data_daily['close'].iloc[i + 1] / historical_data_daily['close'].iloc[i]))
     historical_data_daily['log_return'] = log_return_daily_full
     ####
     RSI = []
-    for i in range(len(blotter['entry_timestamp'])):
+    for i in range(len(blotter['entry_timestamp']) - 1): # get rid of -1 if needed
         dt = blotter['entry_timestamp'].iloc[i].date()
         rsi_data_index = historical_data_daily[historical_data_daily['timestamp'] == dt].index[0]
         rsi_data = historical_data_daily['log_return'].iloc[list(range(rsi_data_index - 14, rsi_data_index))]
@@ -230,6 +230,9 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
             rsi_value = 100 - (100 / (1 + (avg_gain / avg_loss)))
             RSI.append(rsi_value)
 
+    mean_RSI = np.mean(RSI) # watch out
+    RSI.append(mean_RSI) # watch out
+    RSI = RSI[0 : len(blotter['entry_timestamp'])]
     RSI_Z_score = (RSI - np.mean(RSI)) / np.std(RSI)
     blotter['Relative_strength_index'] = RSI
     blotter['RSI_Z_score'] = RSI_Z_score
