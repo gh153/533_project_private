@@ -78,7 +78,7 @@ button:hover {
 }
 
 /* Plot, Blotter, and Ledger containers */
-#plot-container, #blotter-container, #ledger-container {
+#plot-container, #ab_benchmark_container #blotter-container, #ledger-container {
     margin-top: 40px;
     text-align: center;
 }

@@ -50,6 +50,15 @@
         </div>
         {% endif %}
 
+        {% if benchmark_fig_html %}
+        <div id="ab-benchmark-container">
+            <h2>Strategy VS SP500</h2>
+            <div id="plot_vs_sp500">
+                {{ benchmark_fig_html|safe }}
+            </div>
+        </div>
+        {% endif %}
+
         <!-- Display Blotter table -->
         {% if blotter_html %}
         <div id="blotter-container">

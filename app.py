@@ -17,7 +17,7 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
             'currency': "USD"
         }),
         barSizeSetting="1 hour",
-        durationStr="7 M",
+        durationStr="6 M",
     )
 
     #### Get daily data as well because it speeds up the code
@@ -30,7 +30,7 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
             'currency': "USD"
         }),
         barSizeSetting="1 day",
-        durationStr="7 M"
+        durationStr="6 M"
     )
     historical_data_hourly = historical_data_hourly['hst_dta']
     historical_data_daily = historical_data_daily['hst_dta']
@@ -204,6 +204,7 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
     ledger['mkt_value'] = ledger['position'] * ledger['mark'] + ledger['cash']
     ledger_copy = ledger.copy()
 
+
     historical_data_daily['log_return'] = np.log(
         historical_data_daily['close'].shift(-1) / historical_data_daily['close'])
     ledger['log_return'] = np.log(ledger['mkt_value'].shift(-1) / ledger['mkt_value'])
@@ -257,9 +258,10 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
             'currency': 'USD'
         }),
         barSizeSetting='1 day',
-        durationStr='1 Y',
+        durationStr='6 M',
         whatToShow='OPTION_IMPLIED_VOLATILITY'
     )['hst_dta']
+
 
     historical_data_daily_iv['trd_prd'] = historical_data_daily_iv['timestamp'].apply(
         lambda x: (int(x.isocalendar()[0]) + int(x.isocalendar()[1]) * 0.01)
@@ -273,6 +275,7 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
         on='timestamp',
         how='left'
     )
+
     """
     def fetch_yield_curve(YYYY):
         URL = 'https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=' + \
@@ -532,7 +535,124 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
     df1 = blotter
     df2 = ledger
 
-    return fig, df1, df2
+    print("done")
+
+    def calc_rtns(row, bench):
+        row['trade_rtn'] = np.log(
+            row['exit_price'] / row['entry_price']
+        ) * np.sign(row['qty'])
+        try:
+            row['bench_rtn'] = np.log(
+                bench.loc[
+                    bench['timestamp'] == row['exit_timestamp'],
+                    'open'
+                ].values[0] / bench.loc[
+                    bench['timestamp'] == row['entry_timestamp'],
+                    'open'
+                ].values[0]
+            )
+        except:
+            row['bench_rtn'] = row['trade_rtn']
+        return row
+
+    # Outlines the separate log return for long, short and overall
+    benchmark_data_hourly = sb.fetch_historical_data(
+        contract=sb.Contract({
+            'symbol': "SPX",
+            'secType': "IND",
+            'exchange': "CBOE",
+            'currency': "USD"
+        }),
+        barSizeSetting="1 hour",
+        durationStr="6 M"
+    )['hst_dta'][['timestamp', 'open']]
+
+    ab_benchmark_data = blotter.apply(
+        calc_rtns, args=(benchmark_data_hourly,), axis=1
+    )[['trade_rtn', 'bench_rtn', 'qty']]
+
+
+    ab_benchmark_fig = px.scatter(
+        ab_benchmark_data * 100,
+        x='bench_rtn',
+        y='trade_rtn',
+        color='qty',
+        trendline='ols',
+        title='Strategy Realized Returns Sensitivity wrt the S&P 500:'
+    )
+
+    longs_fig = px.scatter(
+        ab_benchmark_data[ab_benchmark_data['qty'] >= 0] * 100,
+        x='bench_rtn',
+        y='trade_rtn',
+        trendline='ols',
+        trendline_color_override="yellow"
+    )
+    shorts_fig = px.scatter(
+        ab_benchmark_data[ab_benchmark_data['qty'] < 0] * 100,
+        x='bench_rtn',
+        y='trade_rtn',
+        trendline='ols',
+        trendline_color_override="blue"
+    )
+
+    ab_benchmark_fig.add_trace(longs_fig.data[1])
+    ab_benchmark_fig.add_trace(shorts_fig.data[1])
+
+    longs_ab = px.get_trendline_results(longs_fig).iloc[0]["px_fit_results"].params
+    shorts_ab = px.get_trendline_results(shorts_fig).iloc[0]["px_fit_results"].params
+    overall = px.get_trendline_results(ab_benchmark_fig).iloc[0]["px_fit_results"].params
+
+    ab_benchmark_fig = ab_benchmark_fig.add_annotation(
+        text="<b>Longs</b>: alpha=" + str(round(longs_ab[0], 3)) +
+             "%; beta=" + str(round(longs_ab[1], 3)),
+        xref="paper",
+        yref="paper",
+        x=0.90,
+        y=1.17,
+        showarrow=False,
+        font=dict(size=15, color='yellow')
+    ).add_annotation(
+        text="<b>Shorts</b>: alpha=" + str(round(shorts_ab[0], 3)) +
+             "%; beta=" + str(round(shorts_ab[1], 3)),
+        xref="paper",
+        yref="paper",
+        x=0.91,
+        y=1.10,
+        showarrow=False,
+        font=dict(size=15, color='blue')
+    ).add_annotation(
+        text="<b>Overall</b>: alpha=" + str(round(overall[0], 3)) +
+             "%; beta=" + str(round(overall[1], 3)),
+        xref="paper",
+        yref="paper",
+        x=0.05,
+        y=1.17,
+        showarrow=False,
+        font=dict(size=15, color='orange')
+    ).update_layout(
+        yaxis=dict(
+            tickfont=dict(size=12),
+            tickformat=".3s",
+            showgrid=False,
+            title=dict(text="Strategy Return per trading period"),
+            # titlefont=dict(size=15)
+        ),
+        xaxis=dict(
+            tickfont=dict(size=12),
+            tickformat=".3s",
+            showgrid=False,
+            title=dict(text="Underlying Asset Return, Same Timestamps"),
+            # titlefont=dict(size=15),
+        ),
+        yaxis_ticksuffix='%',
+        xaxis_ticksuffix='%',
+        plot_bgcolor='gray'
+    ).update_traces(
+        marker=dict(size=10)
+    )
+
+    return fig, df1, df2, ab_benchmark_fig
 
 
 # Route to display the homepage (index.html)
@@ -552,14 +672,15 @@ def plot():
     rsi_lower = float(request.form['rsi_lower'])
 
     # Call function A
-    plot, blotter, ledger = A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower)
+    plot, blotter, ledger, ab_benchmark_fig = A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower)
 
     # Convert plot to HTML string to render in the template
     plot_html = plot.to_html(plot, full_html=False)
+    benchmark_fig_html = ab_benchmark_fig.to_html(full_html=False)
     blotter_html = blotter[['entry_timestamp', 'qty', 'exit_timestamp', 'entry_price', 'exit_price', 'success']].to_html(classes='table table-striped', index=False)
     ledger_html = ledger.to_html(classes='table table-striped', index=False)
 
-    return render_template('index.html', plot_html=plot_html, blotter_html=blotter_html, ledger_html=ledger_html)
+    return render_template('index.html', plot_html=plot_html, blotter_html=blotter_html, ledger_html=ledger_html, benchmark_fig_html=benchmark_fig_html)
 
 
 if __name__ == '__main__':
