@@ -34,6 +34,7 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
     )
     historical_data_hourly = historical_data_hourly['hst_dta']
     historical_data_daily = historical_data_daily['hst_dta']
+
     #### Fetch your liquid trading hours for the asset
     #### You'll need this later!
     liquid_hours = sb.fetch_contract_details(
@@ -211,11 +212,12 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
 
     log_return_daily_full = [None] * len(historical_data_daily['timestamp'])
     for i in range(len(historical_data_daily['timestamp']) - 1):
-        log_return_daily_full[i] = (np.log(historical_data_daily['close'].iloc[i + 1] / historical_data_daily['close'].iloc[i]))
+        log_return_daily_full[i] = (
+            np.log(historical_data_daily['close'].iloc[i + 1] / historical_data_daily['close'].iloc[i]))
     historical_data_daily['log_return'] = log_return_daily_full
     ####
     RSI = []
-    for i in range(len(blotter['entry_timestamp']) - 1): # get rid of -1 if needed
+    for i in range(len(blotter['entry_timestamp']) - 1):  # get rid of -1 if needed
         dt = blotter['entry_timestamp'].iloc[i].date()
         rsi_data_index = historical_data_daily[historical_data_daily['timestamp'] == dt].index[0]
         rsi_data = historical_data_daily['log_return'].iloc[list(range(rsi_data_index - 14, rsi_data_index))]
@@ -230,9 +232,9 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
             rsi_value = 100 - (100 / (1 + (avg_gain / avg_loss)))
             RSI.append(rsi_value)
 
-    mean_RSI = np.mean(RSI) # watch out
-    RSI.append(mean_RSI) # watch out
-    RSI = RSI[0 : len(blotter['entry_timestamp'])]
+    mean_RSI = np.mean(RSI)  # watch out
+    RSI.append(mean_RSI)  # watch out
+    RSI = RSI[0: len(blotter['entry_timestamp'])]
     RSI_Z_score = (RSI - np.mean(RSI)) / np.std(RSI)
     blotter['Relative_strength_index'] = RSI
     blotter['RSI_Z_score'] = RSI_Z_score
@@ -258,8 +260,10 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
         }),
         barSizeSetting='1 day',
         durationStr='1 Y',
-        whatToShow='OPTION_IMPLIED_VOLATILITY'
+        whatToShow='OPTION_IMPLIED_VOLATILITY',
     )['hst_dta']
+
+    print(historical_data_daily_iv)
 
     historical_data_daily_iv['trd_prd'] = historical_data_daily_iv['timestamp'].apply(
         lambda x: (int(x.isocalendar()[0]) + int(x.isocalendar()[1]) * 0.01)
@@ -450,7 +454,7 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
             if stop_loss_mask.loc[first_exit_row.name]:
                 success = False
                 exit_price = entry_price * (1 - stop_loss_pct_long) if qty > 0 else entry_price * (
-                            1 + stop_loss_pct_short)
+                        1 + stop_loss_pct_short)
             else:
                 success = True
                 exit_price = exit_price_limit
@@ -556,7 +560,9 @@ def plot():
 
     # Convert plot to HTML string to render in the template
     plot_html = plot.to_html(plot, full_html=False)
-    blotter_html = blotter[['entry_timestamp', 'qty', 'exit_timestamp', 'entry_price', 'exit_price', 'success']].to_html(classes='table table-striped', index=False)
+    blotter_html = blotter[
+        ['entry_timestamp', 'qty', 'exit_timestamp', 'entry_price', 'exit_price', 'success']].to_html(
+        classes='table table-striped', index=False)
     ledger_html = ledger.to_html(classes='table table-striped', index=False)
 
     return render_template('index.html', plot_html=plot_html, blotter_html=blotter_html, ledger_html=ledger_html)
