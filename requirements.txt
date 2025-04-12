@@ -1,4 +1,5 @@
-gitnumpy
+flask
+numpy
 pandas
 shinybroker
 plotly
