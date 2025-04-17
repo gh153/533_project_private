@@ -535,7 +535,7 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
     df1 = blotter
     df2 = ledger
 
-    print("done")
+    # print("done")
 
     def calc_rtns(row, bench):
         row['trade_rtn'] = np.log(
@@ -652,7 +652,44 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
         marker=dict(size=10)
     )
 
-    return fig, df1, df2, ab_benchmark_fig
+    vol_calcs['vol_error'] = np.abs(
+        (vol_calcs['obs_vol'] - vol_calcs['exp_vol']) / vol_calcs['obs_vol']
+    )
+
+    # there are 31536000 seconds in a year
+
+    def calc_vol_plot_dta(row):
+        row['trade_rtn'] = np.log(
+            row['exit_price'] / row['entry_price']
+        ) * np.sign(row['qty']) * (
+                                   row['exit_timestamp'] - row['entry_timestamp']
+                           ).total_seconds() / 31536000  # there are 31536000 seconds in a year
+        row['bench_rtn'] = vol_calcs.loc[row.name]['vol_error']
+        return row
+
+    ab_vol_data = blotter.apply(calc_vol_plot_dta, axis=1)[
+        ['trade_rtn', 'bench_rtn', 'qty']
+    ]
+
+    rf = 0.046  # approx.
+    gmrr = np.prod(
+        (
+                blotter.apply(calc_vol_plot_dta, axis=1)['trade_rtn'] + 1
+        ) ** (1 / len(blotter))
+    ) - 1
+    vol = np.std(
+        blotter.apply(calc_vol_plot_dta, axis=1)['trade_rtn']
+    )
+
+    gmrr = np.round(gmrr * 100, 5)
+    vol = np.round(vol * 100, 5)
+    sharpe = np.round((gmrr - rf)/vol, 5)
+
+    avg_return = np.round(np.mean((blotter['exit_price'] - blotter['entry_price']) * blotter['qty'])/100, 2)
+    num_of_trd = 2 * len(blotter['exit_price'])
+
+
+    return fig, df1, df2, ab_benchmark_fig, gmrr, vol, sharpe, avg_return, num_of_trd
 
 
 # Route to display the homepage (index.html)
@@ -672,7 +709,7 @@ def plot():
     rsi_lower = float(request.form['rsi_lower'])
 
     # Call function A
-    plot, blotter, ledger, ab_benchmark_fig = A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower)
+    plot, blotter, ledger, ab_benchmark_fig, gmrr, vol, sharpe, avg_return, num_of_trd = A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower)
 
     # Convert plot to HTML string to render in the template
     plot_html = plot.to_html(plot, full_html=False)
@@ -680,7 +717,7 @@ def plot():
     blotter_html = blotter[['entry_timestamp', 'qty', 'exit_timestamp', 'entry_price', 'exit_price', 'success']].to_html(classes='table table-striped', index=False)
     ledger_html = ledger.to_html(classes='table table-striped', index=False)
 
-    return render_template('index.html', plot_html=plot_html, blotter_html=blotter_html, ledger_html=ledger_html, benchmark_fig_html=benchmark_fig_html)
+    return render_template('index.html', plot_html=plot_html, blotter_html=blotter_html, ledger_html=ledger_html, benchmark_fig_html=benchmark_fig_html, gmrr = gmrr, vol=vol, sharpe = sharpe, avg_return = avg_return, num_of_trd = num_of_trd)
 
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+                                                                              <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -40,6 +40,40 @@
             <button type="submit">Generate Plot</button>
         </form>
 
+        <h2>
+        Strategy Outline: <br>
+        </h2>
+        <h3>
+            &nbsp; &nbsp; In the default Long-Short strategy, we either long an asset when the open price of a new
+        trading period is higher than the close price of the previous trading period, or short an asset if the
+        open price of a new trading period is lower than the close price of the previous trading period.
+        More over, the condition for quit for long is, when the asset’s price goes above (1 + σ) *
+        open price, where σ is the expected volatility of this trading period, and the condition for quit
+        short is, when the asset’s price goes below (1 - σ) * open price. <br>
+            &nbsp; &nbsp; For our new strategy, we incorporated a few metrics to evaluate whether we will long or
+        short an asset. <br>
+            &nbsp; &nbsp; At the beginning of each trading period, we calculate the Relative Strength Index of the
+        stock on this day. Also, we find the Moving Average Convergence Divergence as well,
+        and find the value difference between the MACD and the signal line. <br>
+            &nbsp; &nbsp; Signal line of a day is the average of MACD for the past 7 days. Moreover, we pull
+        the implied volatility of this stock using ShinyBroker. Lastly, we fetch the 10-3 spread on that
+        date using online data source. <br>
+            &nbsp; &nbsp; So now we have 4 metrics: RSI, MACD’s difference between signal line, implied
+        volatility, and 10-3 spread. we then normalize all three metrics and compute the z score of each
+        metric for a single trading period. <br>
+            &nbsp; &nbsp; After first round of decision, we still have a second round to go. In the second round, we
+        call a trading period is bullish if RSI value is smaller than a lower threshold (entered by user),
+        while MACD exceeds signal line, and define a trading period as bearish if RSI value is higher
+        than an upper threshold (entered by user), simultaneously MACD is below the signal line. In the
+        case of bullish we long the asset no matter what is the weighted score, in the case of bearish we
+        short the asset no matter what is the weighted score. <br>
+            &nbsp; &nbsp; Also, the quit criteron is redefined too. The client can enter a long volatility alpha such
+        that, when longing an asset, we only quit if the asset’s price goes above (1 + alpha * σ) * open
+        price. Also, the client can enter a short volatility beta such that, when shorting an asset, we only
+        quit if the asset’s price goes below (1 + beta * σ) * open price. <br>
+
+        </h3>
+
         <!-- Display the plot -->
         {% if plot_html %}
         <div id="plot-container">
@@ -58,6 +92,28 @@
             </div>
         </div>
         {% endif %}
+
+        <!-- Display Volatility, Geometric Mean rate of Return, Sharpe -->
+        {% if vol %}
+        <h2>Volatility: {{ vol }}</h2>
+        {% endif %}
+
+        {% if gmrr %}
+        <h2>Geometric Mean Rate of Return: {{ gmrr }}</h2>
+        {% endif %}
+
+        {% if sharpe %}
+        <h2>Sharpe: {{ sharpe }}</h2>
+        {% endif %}
+
+        {% if avg_return %}
+        <h2>Average Return of each Trading Period (For each dollar spent): {{ avg_return }}</h2>
+        {% endif %}
+
+        {% if num_of_trd %}
+        <h2>Number of trading: {{ num_of_trd }}</h2>
+        {% endif %}
+
 
         <!-- Display Blotter table -->
         {% if blotter_html %}
