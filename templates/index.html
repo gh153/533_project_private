@@ -14,27 +14,27 @@
         <form method="POST" action="/plot">
             <div class="input-group">
                 <label for="stock_symbol">Stock Symbol:</label>
-                <input type="text" id="stock_symbol" name="stock_symbol" required>
+                <input type="text" id="stock_symbol" name="stock_symbol" value="TSLA" required>
             </div>
 
             <div class="input-group">
-                <label for="long_volatility">Long Volatility:</label>
-                <input type="number" id="long_volatility" name="long_volatility" step="0.01" required>
+                <label for="long_volatility">Long Volatility (Recommended between 1 and 10, If the client is more risk-taking for longing assets, this input can be higher, default 3.5):</label>
+                <input type="number" id="long_volatility" name="long_volatility" step="0.01" value=3.5 required>
             </div>
 
             <div class="input-group">
-                <label for="short_volatility">Short Volatility:</label>
-                <input type="number" id="short_volatility" name="short_volatility" step="0.01" required>
+                <label for="short_volatility">Short Volatility (Recommended between 1 and 10, If the client is more risk-taking for shorting assets, this input can be higher, default 2.2):</label>
+                <input type="number" id="short_volatility" name="short_volatility" step="0.01" value=2.2 required>
             </div>
 
             <div class="input-group">
-                <label for="rsi_upper">RSI Upper Threshold:</label>
-                <input type="number" id="rsi_upper" name="rsi_upper" step="0.01" required>
+                <label for="rsi_upper">RSI Upper Threshold (Between 0 and 100, higher value implies more risk aversion for bullish market) :</label>
+                <input type="number" id="rsi_upper" name="rsi_upper" step="0.01" value=70 required>
             </div>
 
             <div class="input-group">
-                <label for="rsi_lower">RSI Lower Threshold:</label>
-                <input type="number" id="rsi_lower" name="rsi_lower" step="0.01" required>
+                <label for="rsi_lower">RSI Lower Threshold (Between 0 and 100, lower value implies more risk aversion for bearish market) :</label>
+                <input type="number" id="rsi_lower" name="rsi_lower" step="0.01" value=30 required>
             </div>
 
             <button type="submit">Generate Plot</button>
