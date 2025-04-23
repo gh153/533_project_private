@@ -1,24 +1,42 @@
 /* General layout and styling */
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f9;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    color: #333;
+
+:root {
+    --primary-color: #0077b6;
+    --primary-light: #00b4d8;
+    --primary-dark: #0353a4;
+    --button-primary: transparent; /* For button backgrounds */
+    --button-primary-hover: #edeef1; /* For button hover backgrounds */
+    --button-primary-active: #e2e2e5; /* For button active backgrounds */
+    --input-hover: #f1f5f9; /* For input hover backgrounds */
+    --secondary-color: #10b981;
+    --accent-color: #f59e0b;
+    --danger-color: #ef4444;
+    --text-color: #1f2937;
+    --text-light: #6b7280;
+    --background-color: #f9fafb;
+    --border-color: #e5e7eb;
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --transition-speed: 0.1s;
 }
 
-.container {
-    width: 80%;
-    max-width: 1100px;
-    margin-top: 40px;
-    padding: 20px;
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+    background-color: var(--background-color);
+    line-height: 1.5;
+}
+
+.container-main {
+    padding: 2rem;
     background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 24px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--card-shadow);
+}
+
+.main-content {
+    max-width: 1200px; /* Adjust the width as needed */
+    margin: 0 auto; /* Centers the container */
+    padding: 0 20px; /* Adds padding on both sides */
 }
 
 h1 {
@@ -33,65 +51,113 @@ form {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    margin-bottom: 30px;
+}
+
+.input-row {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
 }
 
 .input-group {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+}
+
+.input-group label {
+    margin-bottom: 0.5rem;
+}
+
+.input-group input {
+    width: 100%;
+    border-radius: 8px !important;
+    box-sizing: border-box;
 }
 
 label {
     font-size: 1rem;
     color: #555;
+    padding-left: 0.2rem;
 }
 
-input {
-    width: 100%;
+.input {
     padding: 12px;
     font-size: 1rem;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 8px;
     box-sizing: border-box;
+    transition: var(--transition-speed);
 }
 
-input:focus {
-    border-color: #3498db;
+.input:hover {
+    /*border-color: var(--primary-light);*/
+    background-color: var(--input-hover);
+}
+
+.input:focus {
+    background-color: #fff;
+    border-color: var(--primary-color);
     outline: none;
 }
 
-button {
-    width: 100%;
-    padding: 14px;
-    background-color: #3498db;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+.center-input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-button:hover {
-    background-color: #2980b9;
+.input-stock {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: 2px solid;
+    border-color: var(--border-color);
+    border-radius: 0;
+    padding-bottom: 0;
+    font-size: 3rem;
+    width: 300px;
+    text-align: center;
+    transition: var(--transition-speed);
+}
+
+.input-stock:hover {
+    border-color: var(--primary-light);
+}
+
+.input-stock:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+.btn-submit {
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: var(--transition-speed);
+    width: 200px;
+    border-radius: 50px;
+}
+
+.btn-submit:hover {
+    background-color: var(--primary-light);
+}
+
+.btn-submit:active {
+    background-color: var(--primary-dark);
 }
 
 /* Plot, Blotter, and Ledger containers */
-#plot-container, #ab_benchmark_container #blotter-container, #ledger-container {
-    margin-top: 40px;
-    text-align: center;
-}
 
-h2 {
-    color: #2c3e50;
+.h2 {
     font-size: 1.5rem;
-    margin-bottom: 20px;
 }
 
 /* Styling for tables */
 .table {
-    width: 100%;
     margin: 20px 0;
     border-collapse: collapse;
     border-radius: 8px;
@@ -101,14 +167,14 @@ h2 {
 
 .table th,
 .table td {
-    padding: 12px;
+    padding: 4px;
     text-align: left;
     font-size: 1rem;
     border-bottom: 1px solid #ddd;
 }
 
 .table th {
-    background-color: #3498db;
+    background-color: var(--primary-color);
     color: #fff;
 }
 
@@ -121,41 +187,67 @@ h2 {
 }
 
 .table td {
-    color: #555;
+    color: var(--text-color);
 }
 
 .table th, .table td {
+    padding: 4px 12px;
+}
+
+.navbar-wrapper {
+    max-width: 1200px; /* Set your desired fixed width */
+    margin: 0 auto; /* Center the navbar horizontally */
+}
+
+.navbar {
+    max-width: 1200px;
+    color: #fff;
+    margin-top: 20px;
+    border-radius: 50px;
+}
+
+.btn-primary {
     padding: 12px;
+    background-color: var(--button-primary);
+    color: var(--text-color);
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: var(--transition-speed);
+    width: 120px;
+    border-radius: 50px;
+}
+
+.btn-primary:hover {
+    background-color: var(--button-primary-hover);
+}
+
+.btn-primary:active {
+    background-color: var(--button-primary-active);
+}
+
+.btn-nav {
+    padding: 0.5rem;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    border: none;
+    transition: var(--transition-speed);
+    width: 120px;
+    border-radius: 50px;
+}
+
+.btn-nav:hover {
+    background-color: var(--button-primary-hover);
+    color: var(--text-color);
+}
+
+.btn-nav:active {
+    background-color: var(--button-primary-active) !important;
+    color: var(--text-color) !important;
 }
 
 /* Adjust plot size */
 #plot div {
-    max-width: 100%;
-    width: 90%;
     margin: 0 auto;
-    height: 400px;  /* Adjust height */
-}
-
-/* Responsive design */
-@media screen and (max-width: 768px) {
-    .container {
-        width: 90%;
-        padding: 15px;
-    }
-
-    h1 {
-        font-size: 1.5rem;
-    }
-
-    button {
-        padding: 12px;
-    }
-
-    .table th, .table td {
-        padding: 10px;
-    }
-
-    #plot div {
-        height: 300px;  /* Adjust plot height for smaller screens */
-    }
+    height: 400px; /* Adjust height */
 }
