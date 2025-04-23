@@ -86,7 +86,8 @@
             </div>
         {% endif %}
 
-        <table class="table table-striped">
+        {% if vol %}
+            <table class="table table-striped">
             <thead>
             <tr>
                 <th>Metric</th>
@@ -94,37 +95,36 @@
             </tr>
             </thead>
             <tbody>
-            {% if vol %}
-                <tr>
-                    <td>Volatility</td>
-                    <td>{{ vol }}</td>
-                </tr>
-            {% endif %}
-            {% if gmrr %}
-                <tr>
-                    <td>Geometric Mean Rate of Return</td>
-                    <td>{{ gmrr }}</td>
-                </tr>
-            {% endif %}
-            {% if sharpe %}
-                <tr>
-                    <td>Sharpe</td>
-                    <td>{{ sharpe }}</td>
-                </tr>
-            {% endif %}
-            {% if avg_return %}
-                <tr>
-                    <td>Average Return of each Trading Period (For each dollar spent)</td>
-                    <td>{{ avg_return }}</td>
-                </tr>
-            {% endif %}
-            {% if num_of_trd %}
-                <tr>
-                    <td>Number of Trading</td>
-                    <td>{{ num_of_trd }}</td>
-                </tr>
-            {% endif %}
-            </tbody>
+            <tr>
+                <td>Volatility</td>
+                <td>{{ vol }}</td>
+            </tr>
+        {% endif %}
+        {% if gmrr %}
+            <tr>
+                <td>Geometric Mean Rate of Return</td>
+                <td>{{ gmrr }}</td>
+            </tr>
+        {% endif %}
+        {% if sharpe %}
+            <tr>
+                <td>Sharpe</td>
+                <td>{{ sharpe }}</td>
+            </tr>
+        {% endif %}
+        {% if avg_return %}
+            <tr>
+                <td>Average Return of each Trading Period (For each dollar spent)</td>
+                <td>{{ avg_return }}</td>
+            </tr>
+        {% endif %}
+        {% if num_of_trd %}
+            <tr>
+                <td>Number of Trading</td>
+                <td>{{ num_of_trd }}</td>
+            </tr>
+        {% endif %}
+        </tbody>
         </table>
 
 
