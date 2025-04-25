@@ -406,11 +406,11 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
 
                 if bullish:
                     qty = 100
-                    exit_price_limit = entry_price * (1 + expected_vol)
+                    exit_price_limit = entry_price * (1 + long_volatility/100 * expected_vol)
                     decision_info += " + RSI_MACD_bullish"
                 elif bearish:
                     qty = -100
-                    exit_price_limit = entry_price * (1 - expected_vol)
+                    exit_price_limit = entry_price * (1 - short_volatility/100 * expected_vol)
                     decision_info += " + RSI_MACD_bearish"
                 else:
                     qty = default_qty
@@ -688,7 +688,6 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
     avg_return = np.round(np.mean((blotter['exit_price'] - blotter['entry_price']) * blotter['qty'])/100, 2)
     num_of_trd = 2 * len(blotter['exit_price'])
 
-
     return fig, df1, df2, ab_benchmark_fig, gmrr, vol, sharpe, avg_return, num_of_trd
 
 
@@ -708,6 +707,9 @@ def plot():
     rsi_upper = float(request.form['rsi_upper'])
     rsi_lower = float(request.form['rsi_lower'])
 
+    print(stock_symbol)
+    print(long_volatility)
+    print(short_volatility)
     # Call function A
     plot, blotter, ledger, ab_benchmark_fig, gmrr, vol, sharpe, avg_return, num_of_trd = A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower)
 
