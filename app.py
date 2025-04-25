@@ -380,7 +380,7 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
         yield_z = blotter.loc[trd_prd, 'yield_Z_score']
         RSI_z = blotter.loc[trd_prd, 'RSI_Z_score']
 
-        def decide_qty_and_exit(entry_price, prev_close_price, expected_vol,
+        def decide_qty_and_exit(entry_price, prev_close_price, expected_vol, multiple_long, multiple_short,
                                 rsi_value, macd_value, macd_signal,
                                 MACD_z, yield_z, RSI_z):
             """
@@ -392,11 +392,11 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
 
             if weighted_score > 0:
                 default_qty = 100
-                default_exit_price_limit = entry_price * (1 + expected_vol)
+                default_exit_price_limit = entry_price * (1 + multiple_long * expected_vol)
                 decision_info = f"weighted_score_long ({weighted_score:.2f})"
             else:
                 default_qty = -100
-                default_exit_price_limit = entry_price * (1 - expected_vol)
+                default_exit_price_limit = entry_price * (1 - multiple_short * expected_vol)
                 decision_info = f"weighted_score_short ({weighted_score:.2f})"
 
             # 如果同时存在 RSI 和 MACD 原始指标，则可以选择进一步修正信号
@@ -423,7 +423,7 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
 
         # --- 调用辅助函数进行多空决策 ---
         qty, exit_price_limit, decision_info = decide_qty_and_exit(
-            entry_price, prev_close_price, expected_vol,
+            entry_price, prev_close_price, expected_vol,long_volatility, short_volatility,
             rsi_value, macd_value, macd_signal,
             MACD_z, yield_z, RSI_z
         )
