@@ -32,34 +32,31 @@
     <div class="container-main mt-3 mb-4">
         <!-- Form to enter stock data -->
         <form method="POST" action="/plot">
-            <label for="stock_symbol" style="text-align: center; display: block; font-size: 2rem; color: #010101">Test
-                your stock</label>
+            <label for="stock_symbol" style="text-align: center; display: block; font-size: 2rem; color: #010101">Test your stock (Recommended: AAPL)</label>
             <div class="center-input mb-3">
-                <input type="text" class="input-stock" id="stock_symbol" name="stock_symbol" value="TSLA"
+                <input type="text" class="input-stock" id="stock_symbol" name="stock_symbol"
                        required>
             </div>
 
             <div class="input-row">
                 <div class="input-group">
-                    <label for="long_volatility">Long Volatility</label>
-                    <input type="number" class="input" id="long_volatility" name="long_volatility" step="0.01"
-                           value="3.5" required>
+                    <label for="long_volatility">Long Volatility (Recommended: 2.7)</label>
+                    <input type="number" class="input" id="long_volatility" name="long_volatility" step="0.01" required>
                 </div>
 
                 <div class="input-group">
-                    <label for="short_volatility">Short Volatility</label>
-                    <input type="number" class="input" id="short_volatility" name="short_volatility" step="0.01"
-                           value="2.2" required>
+                    <label for="short_volatility">Short Volatility (Recommended: 2.2)</label>
+                    <input type="number" class="input" id="short_volatility" name="short_volatility" step="0.01" required>
                 </div>
 
                 <div class="input-group">
-                    <label for="rsi_upper">RSI Upper Threshold</label>
-                    <input type="number" class="input" id="rsi_upper" name="rsi_upper" step="0.01" value="70" required>
+                    <label for="rsi_upper">RSI Upper Threshold (Recommended: 70)</label>
+                    <input type="number" class="input" id="rsi_upper" name="rsi_upper" step="0.01" required>
                 </div>
 
                 <div class="input-group">
-                    <label for="rsi_lower">RSI Lower Threshold</label>
-                    <input type="number" class="input" id="rsi_lower" name="rsi_lower" step="0.01" value="30" required>
+                    <label for="rsi_lower">RSI Lower Threshold (Recommended: 70)</label>
+                    <input type="number" class="input" id="rsi_lower" name="rsi_lower" step="0.01" required>
                 </div>
             </div>
             <div class="mt-3" style="text-align: center;">
