@@ -14,7 +14,7 @@
     <div class="navbar-wrapper">
         <nav class="navbar navbar-expand-sm justify-content-center p-1">
             <div class="container">
-                <a class="navbar-brand ms-3" href="#"
+                <a class="navbar-brand ms-3" href="/"
                    style="margin: auto 2rem auto auto">alphas.blog</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
@@ -32,7 +32,8 @@
     <div class="container-main mt-3 mb-4">
         <!-- Form to enter stock data -->
         <form method="POST" action="/plot">
-            <label for="stock_symbol" style="text-align: center; display: block; font-size: 2rem; color: #010101">Test your stock (Recommended: AAPL)</label>
+            <label for="stock_symbol" style="text-align: center; display: block; font-size: 2rem; color: #010101">Test
+                your stock</label>
             <div class="center-input mb-3">
                 <input type="text" class="input-stock" id="stock_symbol" name="stock_symbol"
                        required>
@@ -40,22 +41,23 @@
 
             <div class="input-row">
                 <div class="input-group">
-                    <label for="long_volatility">Long Volatility (Recommended: 2.7)</label>
+                    <label for="long_volatility">Long Volatility</label>
                     <input type="number" class="input" id="long_volatility" name="long_volatility" step="0.01" required>
                 </div>
 
                 <div class="input-group">
-                    <label for="short_volatility">Short Volatility (Recommended: 2.2)</label>
-                    <input type="number" class="input" id="short_volatility" name="short_volatility" step="0.01" required>
+                    <label for="short_volatility">Short Volatility</label>
+                    <input type="number" class="input" id="short_volatility" name="short_volatility" step="0.01"
+                           required>
                 </div>
 
                 <div class="input-group">
-                    <label for="rsi_upper">RSI Upper Threshold (Recommended: 70)</label>
+                    <label for="rsi_upper">RSI Upper Threshold</label>
                     <input type="number" class="input" id="rsi_upper" name="rsi_upper" step="0.01" required>
                 </div>
 
                 <div class="input-group">
-                    <label for="rsi_lower">RSI Lower Threshold (Recommended: 30)</label>
+                    <label for="rsi_lower">RSI Lower Threshold</label>
                     <input type="number" class="input" id="rsi_lower" name="rsi_lower" step="0.01" required>
                 </div>
             </div>
@@ -65,84 +67,90 @@
         </form>
 
         <!-- Display the plot -->
-        {% if plot_html %}
-            <div id="plot-container">
-                <h2>NAV Over Time</h2>
-                <div id="plot">
-                    {{ plot_html|safe }}
-                </div>
+        {% if error %}
+            <div class="alert alert-danger alert-dismissible fade show mt-4 mb-0" role="alert" style="text-align: center; border-radius: 16px;">
+                <h3>The stock does not exist</h3>
+                <p>Error: {{ error }}</p>
             </div>
-        {% endif %}
-
-        {% if benchmark_fig_html %}
-            <div id="ab-benchmark-container">
-                <h2>Strategy vs. SPX (S&P 500)</h2>
-                <div id="plot_vs_sp500">
-                    {{ benchmark_fig_html|safe }}
+        {% else %}
+            {% if plot_html %}
+                <div id="plot-container">
+                    <h2>NAV Over Time</h2>
+                    <div id="plot">
+                        {{ plot_html|safe }}
+                    </div>
                 </div>
-            </div>
-        {% endif %}
+            {% endif %}
 
-        {% if vol %}
-            <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Metric</th>
-                <th>Value</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>Volatility</td>
-                <td>{{ vol }}</td>
-            </tr>
-        {% endif %}
-        {% if gmrr %}
-            <tr>
-                <td>Geometric Mean Rate of Return</td>
-                <td>{{ gmrr }}</td>
-            </tr>
-        {% endif %}
-        {% if sharpe %}
-            <tr>
-                <td>Sharpe</td>
-                <td>{{ sharpe }}</td>
-            </tr>
-        {% endif %}
-        {% if avg_return %}
-            <tr>
-                <td>Average Return of each Trading Period (For each dollar spent)</td>
-                <td>{{ avg_return }}</td>
-            </tr>
-        {% endif %}
-        {% if num_of_trd %}
-            <tr>
-                <td>Number of Trading</td>
-                <td>{{ num_of_trd }}</td>
-            </tr>
-        {% endif %}
-        </tbody>
-        </table>
-
-
-        <!-- Display Blotter table -->
-        {% if blotter_html %}
-            <div id="blotter-container">
-                <h2 class="mt-4">Blotter</h2>
-                <div id="blotter">
-                    {{ blotter_html|safe }}
+            {% if benchmark_fig_html %}
+                <div id="ab-benchmark-container">
+                    <h2>Strategy vs. SPX (S&P 500)</h2>
+                    <div id="plot_vs_sp500">
+                        {{ benchmark_fig_html|safe }}
+                    </div>
                 </div>
-            </div>
-        {% endif %}
+            {% endif %}
+            {% if vol %}
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Volatility</td>
+                        <td>{{ vol }}</td>
+                    </tr>
+                    {% if gmrr %}
+                        <tr>
+                            <td>Geometric Mean Rate of Return</td>
+                            <td>{{ gmrr }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if sharpe %}
+                        <tr>
+                            <td>Sharpe</td>
+                            <td>{{ sharpe }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if avg_return %}
+                        <tr>
+                            <td>Average Return of each Trading Period (For each dollar spent)</td>
+                            <td>{{ avg_return }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if num_of_trd %}
+                        <tr>
+                            <td>Number of Trading</td>
+                            <td>{{ num_of_trd }}</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            {% endif %}
 
-        <!-- Display Ledger table -->
-        {% if ledger_html %}
-            <div id="ledger-container">
-                <h2 class="mt-4">Ledger</h2>
-                <div id="ledger">
-                    {{ ledger_html|safe }}
+
+            <!-- Display Blotter table -->
+            {% if blotter_html %}
+                <div id="blotter-container">
+                    <h2 class="mt-4">Blotter</h2>
+                    <div id="blotter">
+                        {{ blotter_html|safe }}
+                    </div>
                 </div>
-            </div>
+            {% endif %}
+
+            <!-- Display Ledger table -->
+            {% if ledger_html %}
+                <div id="ledger-container">
+                    <h2 class="mt-4">Ledger</h2>
+                    <div id="ledger">
+                        {{ ledger_html|safe }}
+                    </div>
+                </div>
+            {% endif %}
         {% endif %}
     </div>
 

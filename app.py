@@ -32,6 +32,7 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
         barSizeSetting="1 day",
         durationStr="6 M"
     )
+    # If failed return error
     historical_data_hourly = historical_data_hourly['hst_dta']
     historical_data_daily = historical_data_daily['hst_dta']
     #### Fetch your liquid trading hours for the asset
@@ -711,8 +712,10 @@ def plot():
     print(long_volatility)
     print(short_volatility)
     # Call function A
-    plot, blotter, ledger, ab_benchmark_fig, gmrr, vol, sharpe, avg_return, num_of_trd = A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower)
-
+    try:
+        plot, blotter, ledger, ab_benchmark_fig, gmrr, vol, sharpe, avg_return, num_of_trd = A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower)
+    except Exception as e:
+        return render_template('index.html', error=e)
     # Convert plot to HTML string to render in the template
     plot_html = plot.to_html(plot, full_html=False)
     benchmark_fig_html = ab_benchmark_fig.to_html(full_html=False)
