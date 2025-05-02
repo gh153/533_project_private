@@ -527,9 +527,9 @@ def A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower):
     )
 
     ledger_comparison = pd.merge(ledger_copy[['date', 'mark', 'mkt_value']], ledger[['date', 'mkt_value']], on='date')
-    ledger_comparison.columns = ['date', 'mark', 'mkt_value_old', 'mkt_value_new']
+    ledger_comparison.columns = ['date', 'mark', 'Buy Low Sell High', 'Optimized Buy Low Sell High']
 
-    fig = px.line(ledger_comparison, x='date', y=['mkt_value_old', 'mkt_value_new'])
+    fig = px.line(ledger_comparison, x='date', y=['Buy Low Sell High', 'Optimized Buy Low Sell High'])
     # Placeholder for your actual function A
     # Replace the following with your actual implementation
 
