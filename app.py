@@ -715,14 +715,14 @@ def plot():
     try:
         plot, blotter, ledger, ab_benchmark_fig, gmrr, vol, sharpe, avg_return, num_of_trd = A(stock_symbol, long_volatility, short_volatility, rsi_upper, rsi_lower)
     except Exception as e:
-        return render_template('index.html', error=e)
+        return render_template('index.html', error=e, stock_symbol=stock_symbol, long_volatility=long_volatility, short_volatility=short_volatility, rsi_upper=rsi_upper, rsi_lower=rsi_lower)
     # Convert plot to HTML string to render in the template
     plot_html = plot.to_html(plot, full_html=False)
     benchmark_fig_html = ab_benchmark_fig.to_html(full_html=False)
     blotter_html = blotter[['entry_timestamp', 'qty', 'exit_timestamp', 'entry_price', 'exit_price', 'success']].to_html(classes='table table-striped', index=False)
     ledger_html = ledger.to_html(classes='table table-striped', index=False)
 
-    return render_template('index.html', plot_html=plot_html, blotter_html=blotter_html, ledger_html=ledger_html, benchmark_fig_html=benchmark_fig_html, gmrr = gmrr, vol=vol, sharpe = sharpe, avg_return = avg_return, num_of_trd = num_of_trd)
+    return render_template('index.html', plot_html=plot_html, blotter_html=blotter_html, ledger_html=ledger_html, benchmark_fig_html=benchmark_fig_html, gmrr = gmrr, vol=vol, sharpe = sharpe, avg_return = avg_return, num_of_trd = num_of_trd, stock_symbol=stock_symbol, long_volatility=long_volatility, short_volatility=short_volatility, rsi_upper=rsi_upper, rsi_lower=rsi_lower)
 
 
 if __name__ == '__main__':
