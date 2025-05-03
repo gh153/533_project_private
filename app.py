@@ -703,10 +703,10 @@ def index():
 def plot():
     # Get input from the form
     stock_symbol = request.form['stock_symbol']
-    long_volatility = float(request.form['long_volatility'])
-    short_volatility = float(request.form['short_volatility'])
-    rsi_upper = float(request.form['rsi_upper'])
-    rsi_lower = float(request.form['rsi_lower'])
+    long_volatility = float(request.form['long_volatility'] or 2.0)
+    short_volatility = float(request.form['short_volatility'] or 1.0)
+    rsi_upper = float(request.form['rsi_upper'] or 70.0)
+    rsi_lower = float(request.form['rsi_lower'] or 30.0)
 
     print(stock_symbol)
     print(long_volatility)
